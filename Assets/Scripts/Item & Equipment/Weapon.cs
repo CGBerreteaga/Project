@@ -7,6 +7,7 @@ public class Weapon : MonoBehaviour
     [SerializeField] CapsuleCollider _collider;
     [SerializeField] Combat combatScript;
     [SerializeField] float weaponDamage = 10;
+    [SerializeField] float backstabWeaponDamage = 1000;
 
     [SerializeField] AudioClip[] weaponSound;
     
@@ -32,15 +33,15 @@ public class Weapon : MonoBehaviour
 
     void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.GetComponent<Combat>() != null)
+        if (other.gameObject.GetComponent<Combat>() != null && other.gameObject.GetComponent<Combat>().attackReady && !combatScript.behindEnemy)
         {
-            if (other.gameObject.GetComponent<Combat>().attackReady) {
-                other.gameObject.GetComponent<Combat>().ActivateReact();
-                other.gameObject.GetComponent<Player>().ReceiveDmg(weaponDamage);
-            }
-            
+            other.gameObject.GetComponent<Combat>().ActivateReact();
+            other.gameObject.GetComponent<Player>().ReceiveDmg(weaponDamage);
+        } else if(other.gameObject.GetComponent<Combat>() != null && other.gameObject.GetComponent<Combat>().attackReady && combatScript.behindEnemy)
+        {
+            other.gameObject.GetComponent<Combat>().ActivateReact();
+            other.gameObject.GetComponent<Player>().ReceiveDmg(backstabWeaponDamage);
         }
-        
     }
 
     //ICharacter is an interface that all game character inherit from

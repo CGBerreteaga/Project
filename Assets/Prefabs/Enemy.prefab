@@ -56041,6 +56041,7 @@ MonoBehaviour:
   controller: {fileID: 0}
   _inputs: {fileID: 0}
   attackReady: 1
+  behindEnemy: 0
   hitReacionAudioClip: {fileID: 8300000, guid: 794be7c4bd9e64c9bbb9776937807a9e, type: 3}
 --- !u!114 &5382042595208173783
 MonoBehaviour:

@@ -59,9 +59,7 @@ public class Player : MonoBehaviour
         healthBar.value = currentHp;
 
         if (currentHp <= 0)
-        {
-            
-            animator.SetTrigger("Death");
+        {  
             healthBarFill.SetActive(false);
         }
 

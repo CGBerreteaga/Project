@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using StarterAssets;
 using UnityEngine;
 
@@ -7,33 +5,64 @@ public class Combat : MonoBehaviour
 {
     [SerializeField] Animator animator;
     [SerializeField] Weapon weapon;
-    [SerializeField] ThirdPersonController controller; // Non-nullable by default
-    [SerializeField] StarterAssetsInputs _inputs; // Non-nullable by default
+    [SerializeField] ThirdPersonController controller;
+    [SerializeField] StarterAssetsInputs _inputs;
+    public float playerHealth;
     public bool attackReady = true;
+    public bool behindEnemy = false;
+    public bool backstabbed = false;
 
-    public AudioClip hitReacionAudioClip;
+    public Combat enemy;
+    public AudioClip hitReactionAudioClip;
 
-    private void OnValidate()
+    public  float dotProduct;
+
+    void OnValidate()
     {
-        animator = GetComponent<Animator>();
-        controller = GetComponent<ThirdPersonController>();
-        _inputs = GetComponent<StarterAssetsInputs>();
+        if (animator == null)
+            animator = GetComponent<Animator>();
 
+        if (controller == null)
+            controller = GetComponent<ThirdPersonController>();
+
+        if (_inputs == null)
+            _inputs = GetComponent<StarterAssetsInputs>();
+        
+        
     }
 
     void Update()
     {
+        playerHealth = GetComponent<Player>().GetHealth();
+
         if (_inputs != null && _inputs.attack && attackReady)
         {
             attackReady = false;
-            Attack();
+            Attack(behindEnemy);
         }
+
+        if (playerHealth <= 0 && backstabbed) {
+                Debug.Log("Backstab Death");
+                animator.SetTrigger("Backstab Death");
+            } else if (playerHealth <= 0 && !backstabbed) {
+                Debug.Log("Death");
+                animator.SetTrigger("Death");
+            }
     }
 
-    public void Attack()
+    public void Attack(bool behindEnemy)
     {
         weapon = GetComponentInChildren<Weapon>();
-        animator.SetTrigger("Attack");
+        if (behindEnemy)
+        {
+            enemy.backstabbed = true;
+            animator.SetTrigger("Backstab");
+        }
+        else
+        {
+            animator.SetTrigger("Attack");
+        }
+
         if (controller != null)
             controller.enabled = false;
     }
@@ -46,31 +75,28 @@ public class Combat : MonoBehaviour
 
     public void Sheathe()
     {
-        Debug.Log("sheathe");
         if (weapon != null)
             weapon.Deactivate();
 
         animator.ResetTrigger("Attack");
+        animator.ResetTrigger("Backstab");
+        attackReady = true;
+
         if (controller != null)
             controller.enabled = true;
-        attackReady = true;
     }
 
     public void ActivateReact()
     {
-        
-        if (attackReady) {
-            AudioSource.PlayClipAtPoint(hitReacionAudioClip, transform.position);
+        if (attackReady)
+        {
+            AudioSource.PlayClipAtPoint(hitReactionAudioClip, transform.position);
 
-            
-
-            if (gameObject.GetComponent<Player>().GetHealth() > 0) {
+            if (playerHealth > 0 && !backstabbed)
+            {
                 animator.SetTrigger("Hit");
+                attackReady = false;
             }
-            
-            attackReady = false;
-            
-            
         }
     }
 
@@ -80,5 +106,33 @@ public class Combat : MonoBehaviour
         attackReady = true;
     }
 
-    
+    void OnTriggerStay(Collider collider)
+    {
+        if (collider.gameObject.CompareTag("Enemy"))
+        {
+            Vector3 directionToEnemy = collider.gameObject.transform.forward - transform.position;
+            Vector3 playerDirection = transform.forward;
+            dotProduct = Vector3.Dot(directionToEnemy.normalized, playerDirection.normalized);
+            enemy = collider.gameObject.GetComponent<Combat>();
+            
+            // Check if player is directly behind the enemy
+            if (dotProduct >= 0.7)
+            {
+                behindEnemy = true;
+            }
+            else
+            {
+                behindEnemy = false;
+            }
+        }
+    }
+
+    void OnTriggerExit(Collider collider)
+    {
+        if (collider.gameObject.CompareTag("Enemy"))
+        {
+            behindEnemy = false;
+            enemy = null;
+        }
+    }
 }
