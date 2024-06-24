@@ -12,6 +12,8 @@ public class Combat : MonoBehaviour
     public bool behindEnemy = false;
     public bool backstabbed = false;
 
+    public GameObject backstabAbleAlertUI;
+
     public Combat enemy;
     public AudioClip hitReactionAudioClip;
 
@@ -116,13 +118,15 @@ public class Combat : MonoBehaviour
             enemy = collider.gameObject.GetComponent<Combat>();
             
             // Check if player is directly behind the enemy
-            if (dotProduct >= 0.7)
+            if (dotProduct >= 0.7 && controller.isCrouching)
             {
                 behindEnemy = true;
+                backstabAbleAlertUI.SetActive(true);
             }
             else
             {
                 behindEnemy = false;
+                backstabAbleAlertUI.SetActive(false);
             }
         }
     }

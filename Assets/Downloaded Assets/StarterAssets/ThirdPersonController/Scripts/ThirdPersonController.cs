@@ -53,7 +53,9 @@ namespace StarterAssets
         [Header("Player Grounded")]
         [Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
         public bool Grounded = true;
-
+        [Header("Player Crouching")]
+        [Tooltip("If the character is crouching or not.")]
+        public bool isCrouching = false;
         // [Header("Player Attacking")]
         // [Tooltip("If the character can attack or not")]
         // public bool canAttack = false;
@@ -398,6 +400,17 @@ namespace StarterAssets
             if (animationEvent.animatorClipInfo.weight > 0.5f)
             {
                 AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
+            }
+        }
+
+        private void OnCrouch() {
+            
+            if(!isCrouching) {
+                _animator.SetBool("Crouching", true);
+                isCrouching = true;
+            } else if (isCrouching) {
+                _animator.SetBool("Crouching", false);
+                isCrouching = false;
             }
         }
 
