@@ -1,127 +1,120 @@
 using System.Collections;
 using System.Collections.Generic;
+using StarterAssets;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
 
 public class Player : MonoBehaviour
-{
-    [SerializeField] float xpGain, maxHp, currentHp, maxMana, maxXp, baseStr, baseDef, baseInt;
-    [SerializeField] AttributeScriptableObject strength, defense, intelligence, hp, mana, xp, stamina;
-    [SerializeField] Dictionary<AttributeScriptableObject, Wrapper> stats = new Dictionary<AttributeScriptableObject, Wrapper>();
-    //Added animator and spellCost to allow code to compile. May need to remove this later
+{   
+    private ThirdPersonController thirdPersonController;
     [SerializeField] Animator animator;
-
     [SerializeField] Slider healthBar;
+    [SerializeField] Text healthText;
 
     [SerializeField] GameObject healthBarFill;
 
-    [SerializeField] float spellCost = 5;
+    [SerializeField] Slider manaBar;
+    [SerializeField] Text manaText;
+    [SerializeField] GameObject manaBarFill;
 
-   
-    //Player gains experience by defeating enemies.
-    //If the XP reaches its max, the character levels up. 
-    internal void AddXP()
+    [SerializeField] Slider staminaBar;
+    [SerializeField] Text staminaText;
+    [SerializeField] GameObject staminaBarFill;
+
+    [SerializeField] float max_hp;
+    [SerializeField] float max_mp;
+    [SerializeField] float max_stamina;
+     [SerializeField] float current_hp;
+    [SerializeField] float current_mp;
+    [SerializeField] float current_stamina;
+
+    private void Awake()
     {
-        var stat = Get<Notifier>(xp);
-        stat.Add(xpGain);
-        if (stat.Amount >= stat.Max)
-        {
-            stat.Add(-1 * stat.Max);
-            LevelUp();
+        current_hp = max_hp;
+        healthBar.maxValue = max_hp;
+        current_mp = max_mp;
+        current_stamina = max_stamina;
+
+        if (manaBar != null && staminaBar != null) {
+            manaBar.maxValue = max_mp;
+            staminaBar.maxValue = max_stamina;
         }
     }
 
-    //Leveling up upgrades the basic value of all stats. 
-    private void LevelUp()
-    {
-        Get<Stats>(strength).Upgrade();
-        Get<Stats>(defense).Upgrade();
-        Get<Stats>(intelligence).Upgrade();
+    private void Start() {
+        if (GetComponent<ThirdPersonController>() != null) {
+            thirdPersonController = GetComponent<ThirdPersonController>();
+            InvokeRepeating("DecreaseStaminaOncePerSecond", 0.0f, 1.0f);
+        }
     }
-
-    //Populate the wrapper dictionary with the player attributes 
-    private void Awake()
-    {
-        stats.Add(strength, new Stats(baseStr));
-        stats.Add(defense, new Stats(baseDef));
-        stats.Add(intelligence, new Stats(baseInt));
-        stats.Add(hp, new Notifier(maxHp, maxHp));
-        stats.Add(mana, new Notifier(maxMana, maxMana));
-        stats.Add(xp, new Notifier(0, maxXp));
-        currentHp = maxHp;
-        healthBar.maxValue = maxHp;
-    }
-
     void Update() 
     {
-        
-        healthBar.value = currentHp;
+        UpdateUI();
+    }
 
-        if (currentHp <= 0)
+    public void ReceiveDmg(float damage)
+    {
+        current_hp -= damage;
+        
+    }
+    public float GetHealth() {
+        return current_hp;
+    }
+
+    public float GetMana() {
+        return current_mp;
+    }
+
+    public float GetStamina() {
+        return current_stamina;
+    }
+
+    private void UpdateUI () {
+        //Health Updates
+        healthBar.value = current_hp;
+
+        if (current_hp <= 0)
         {  
             healthBarFill.SetActive(false);
         }
 
-    }
-
-    //A character's strength determines its damage 
-    public float TotalDmg
-    {
-        get
-        {
-            var str = Get<Stats>(strength);
-            if (str != null)
-                return str.Total;
-            else
-                return 0;
-        }
-    }
-
-    //A character's intelligence determines its spell damage 
-    public float SpellDmg
-    {
-        get
-        {
-            var @int = Get<Stats>(intelligence);
-            if (@int != null)
-                return @int.Total;
-            else
-                return 0;
-        }
-    }
-
-    //A character can only cast spells if they have enough MP 
-    internal bool Cast()
-    {
-        var stat = Get<Notifier>(mana);
-        if (stat.Amount >= spellCost)
-        {
-            stat.Add(-1 * spellCost);
-            return true;
-        }
-        return false;
-    }
-    
-    //A character's defense determines how much incoming damage is reduced
-    public void ReceiveDmg(float damage)
-    {
-        // var stat = Get<Notifier>(hp);
-        // stat.Add(Get<Stats>(defense).Total - damage);
-        currentHp -= damage;
         
+        if (manaBar != null && staminaBar != null) {
+            healthText.text = "HP " + current_hp + "/" + max_hp;
+            //Mana Updates
+            manaBar.value = current_mp;
+            manaText.text = "MP " + current_mp + "/" + max_mp;
+            if (current_mp <= 0) 
+            {
+                manaBarFill.SetActive(false);
+            }
+            //Stamina Updates
+            staminaBar.value = current_stamina;
+            staminaText.text = "SP " + current_stamina + "/" + max_stamina;
+
+            if (current_stamina <= 0) 
+            {
+                staminaBarFill.SetActive(false);
+            }
+        }
     }
 
-    //All classes can use this function to access a character's wrappers
-    //simply by referencing an attribute ScriptableObject 
-    public T Get<T>(AttributeScriptableObject attribute) where T : Wrapper
+    void DecreaseStaminaOncePerSecond()
     {
-        if (!stats.ContainsKey(attribute))
-            return null;
-        return stats[attribute] as T;
-    }
-
-    public float GetHealth() {
-        return currentHp;
+        if (thirdPersonController.GetSpeed() > 5)
+        {
+            current_stamina -= 1;
+            if (current_stamina < 0)
+            {
+                current_stamina = 0;
+            }
+        } else if (current_stamina <= max_stamina) {
+            current_stamina += 0.5f;
+            if (current_stamina > 25) {
+                current_stamina = 25;
+            }
+        }
     }
 }

@@ -12,6 +12,8 @@ public class Combat : MonoBehaviour
     public bool behindEnemy = false;
     public bool backstabbed = false;
 
+    public GameObject target;
+
     public GameObject backstabAbleAlertUI;
 
     public Combat enemy;
@@ -58,6 +60,8 @@ public class Combat : MonoBehaviour
         if (behindEnemy)
         {
             enemy.backstabbed = true;
+            target.transform.localPosition = transform.position + new Vector3(0,0,-.6f);
+            target.transform.rotation = transform.rotation;
             animator.SetTrigger("Backstab");
         }
         else
@@ -112,6 +116,7 @@ public class Combat : MonoBehaviour
     {
         if (collider.gameObject.CompareTag("Enemy"))
         {
+            target = collider.gameObject;
             Vector3 directionToEnemy = collider.gameObject.transform.forward - transform.position;
             Vector3 playerDirection = transform.forward;
             dotProduct = Vector3.Dot(directionToEnemy.normalized, playerDirection.normalized);
@@ -135,6 +140,7 @@ public class Combat : MonoBehaviour
     {
         if (collider.gameObject.CompareTag("Enemy"))
         {
+            target = null;
             behindEnemy = false;
             enemy = null;
         }

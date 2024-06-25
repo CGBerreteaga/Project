@@ -414,6 +414,10 @@ namespace StarterAssets
             }
         }
 
+        public float GetSpeed() {
+            return _speed;
+        }
+
         
     }
 }
