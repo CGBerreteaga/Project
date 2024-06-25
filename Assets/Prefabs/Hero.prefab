@@ -1058,7 +1058,7 @@ RectTransform:
   m_GameObject: {fileID: 3893201992864582136}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 6.5981, y: 1, z: 1}
+  m_LocalScale: {x: 6.5981, y: 0.5801, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2980605519038175411}
@@ -1074,7 +1074,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: 2}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &8897513219995275583
@@ -2745,6 +2745,21 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 80328187620921253, guid: 32eb347f03c37014080d0c1fba9fae61,
         type: 3}
+      propertyPath: max_hp
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 80328187620921253, guid: 32eb347f03c37014080d0c1fba9fae61,
+        type: 3}
+      propertyPath: max_mp
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 80328187620921253, guid: 32eb347f03c37014080d0c1fba9fae61,
+        type: 3}
+      propertyPath: manaBar
+      value: 
+      objectReference: {fileID: 9019280413955558873}
+    - target: {fileID: 80328187620921253, guid: 32eb347f03c37014080d0c1fba9fae61,
+        type: 3}
       propertyPath: maxMana
       value: 10
       objectReference: {fileID: 0}
@@ -2756,14 +2771,54 @@ PrefabInstance:
         type: 2}
     - target: {fileID: 80328187620921253, guid: 32eb347f03c37014080d0c1fba9fae61,
         type: 3}
+      propertyPath: animator
+      value: 
+      objectReference: {fileID: 3219177925813121518}
+    - target: {fileID: 80328187620921253, guid: 32eb347f03c37014080d0c1fba9fae61,
+        type: 3}
+      propertyPath: manaText
+      value: 
+      objectReference: {fileID: 12677487404118265}
+    - target: {fileID: 80328187620921253, guid: 32eb347f03c37014080d0c1fba9fae61,
+        type: 3}
       propertyPath: healthBar
       value: 
       objectReference: {fileID: 54497242358628268}
     - target: {fileID: 80328187620921253, guid: 32eb347f03c37014080d0c1fba9fae61,
         type: 3}
+      propertyPath: healthText
+      value: 
+      objectReference: {fileID: 2477773397785018326}
+    - target: {fileID: 80328187620921253, guid: 32eb347f03c37014080d0c1fba9fae61,
+        type: 3}
+      propertyPath: staminaBar
+      value: 
+      objectReference: {fileID: 2691002830781840857}
+    - target: {fileID: 80328187620921253, guid: 32eb347f03c37014080d0c1fba9fae61,
+        type: 3}
+      propertyPath: manaBarFill
+      value: 
+      objectReference: {fileID: 1904598253600941223}
+    - target: {fileID: 80328187620921253, guid: 32eb347f03c37014080d0c1fba9fae61,
+        type: 3}
+      propertyPath: max_stamina
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 80328187620921253, guid: 32eb347f03c37014080d0c1fba9fae61,
+        type: 3}
+      propertyPath: staminaText
+      value: 
+      objectReference: {fileID: 3164037500089837836}
+    - target: {fileID: 80328187620921253, guid: 32eb347f03c37014080d0c1fba9fae61,
+        type: 3}
       propertyPath: healthBarFill
       value: 
       objectReference: {fileID: 9088304932117541740}
+    - target: {fileID: 80328187620921253, guid: 32eb347f03c37014080d0c1fba9fae61,
+        type: 3}
+      propertyPath: staminaBarFill
+      value: 
+      objectReference: {fileID: 1904598253600941223}
     - target: {fileID: 95995625019310122, guid: 32eb347f03c37014080d0c1fba9fae61,
         type: 3}
       propertyPath: m_Controller
@@ -2882,6 +2937,12 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 3324003509993174067}
   m_SourcePrefab: {fileID: 100100000, guid: 32eb347f03c37014080d0c1fba9fae61, type: 3}
+--- !u!95 &3219177925813121518 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 95995625019310122, guid: 32eb347f03c37014080d0c1fba9fae61,
+    type: 3}
+  m_PrefabInstance: {fileID: 3312919551986512324}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3312231721144230216 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4138511184629900, guid: 32eb347f03c37014080d0c1fba9fae61,

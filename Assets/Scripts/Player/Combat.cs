@@ -61,7 +61,7 @@ public class Combat : MonoBehaviour
         {
             enemy.backstabbed = true;
             target.transform.localPosition = transform.position + new Vector3(0,0,-.6f);
-            target.transform.rotation = transform.rotation;
+            target.transform.localRotation = transform.localRotation;
             animator.SetTrigger("Backstab");
         }
         else
