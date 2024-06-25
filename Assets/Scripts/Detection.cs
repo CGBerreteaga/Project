@@ -19,10 +19,19 @@ public class Detection : MonoBehaviour
         alertNotificationDisplay.SetActive(detected);
     }
 
+    void OnTriggerEnter(Collider collider) {
+        if(collider.gameObject.CompareTag("Player")) {
+            if (!collider.GetComponent<ThirdPersonController>().isCrouching) {
+                EventManager.TriggerDetectionSound(gameObject);
+            }
+        }
+    }
+    
     void OnTriggerStay(Collider collider) {
         if(collider.gameObject.CompareTag("Player")) {
             if (!collider.GetComponent<ThirdPersonController>().isCrouching) {
                 detected = true;
+                GetComponentInParent<Animator>().SetBool("Detected",true);
             }
 
             if (detected) {
@@ -35,6 +44,7 @@ public class Detection : MonoBehaviour
     void OnTriggerExit(Collider collider) {
         if(collider.gameObject.CompareTag("Player")) {
             detected = false;
+            GetComponentInParent<Animator>().SetBool("Detected",false);
             ;
         }
     }

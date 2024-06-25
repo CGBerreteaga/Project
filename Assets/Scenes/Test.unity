@@ -486,6 +486,60 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1021888220}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &582822002
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 582822004}
+  - component: {fileID: 582822003}
+  m_Layer: 0
+  m_Name: EventManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &582822003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 582822002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62302e481f6b843c480a154241fd701f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackSoundPrefab: {fileID: 3447424792134926502, guid: 0e39d175fa8e8476299c45a78ad3cbed,
+    type: 3}
+  detectionSoundPrefab: {fileID: 6567874793589099218, guid: 42e15b03a118a486a8d289d2af8bac51,
+    type: 3}
+  hitSoundPrefab: {fileID: 6150034010094842305, guid: 686d0590213134f9b8a3cb85b0dfc55f,
+    type: 3}
+  swordSoundPrefab: {fileID: 8899624113753454140, guid: 5969dce6372434a7d81641a4f6ca306e,
+    type: 3}
+  backstabSoundPrefab: {fileID: 511934583662382341, guid: 540c61e5475e94d94bfb99b65ab1a82a,
+    type: 3}
+--- !u!4 &582822004
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 582822002}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.9519501, y: 1.9858712, z: 0.49002087}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &659230187
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -904,7 +958,7 @@ PrefabInstance:
     - target: {fileID: 4109126726784247324, guid: ca9c4cc7e988f444d8ed13d2f40d2135,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -44
       objectReference: {fileID: 0}
     - target: {fileID: 4109126726784247324, guid: ca9c4cc7e988f444d8ed13d2f40d2135,
         type: 3}
@@ -961,6 +1015,11 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6612676243459870591, guid: ca9c4cc7e988f444d8ed13d2f40d2135,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -6.2606125
+      objectReference: {fileID: 0}
     - target: {fileID: 7629501424188174328, guid: ca9c4cc7e988f444d8ed13d2f40d2135,
         type: 3}
       propertyPath: m_Colors.m_NormalColor.b
@@ -990,6 +1049,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Colors.m_NormalColor.r
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8490586745566132794, guid: ca9c4cc7e988f444d8ed13d2f40d2135,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -6.2606125
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1196,3 +1260,4 @@ SceneRoots:
   - {fileID: 1010227617}
   - {fileID: 714014584}
   - {fileID: 1021888220}
+  - {fileID: 582822004}

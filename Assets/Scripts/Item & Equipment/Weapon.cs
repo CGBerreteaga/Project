@@ -18,8 +18,6 @@ public class Weapon : MonoBehaviour
     public void Activate()
     {
         _collider.enabled = true;
-        AudioSource.PlayClipAtPoint(weaponSound[Random.Range(0, weaponSound.Length)],transform.position);
-        
     }
 
     public void Deactivate()
@@ -36,6 +34,7 @@ public class Weapon : MonoBehaviour
         if (other.gameObject.GetComponent<Combat>() != null && other.gameObject.GetComponent<Combat>().attackReady && !combatScript.behindEnemy)
         {
             other.gameObject.GetComponent<Combat>().ActivateReact();
+            EventManager.TriggerSwordSound(other.gameObject);
             other.gameObject.GetComponent<Player>().ReceiveDmg(weaponDamage);
         } else if(other.gameObject.GetComponent<Combat>() != null && other.gameObject.GetComponent<Combat>().attackReady && combatScript.behindEnemy)
         {

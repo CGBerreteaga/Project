@@ -17,7 +17,7 @@ public class Combat : MonoBehaviour
     public GameObject backstabAbleAlertUI;
 
     public Combat enemy;
-    public AudioClip hitReactionAudioClip;
+    //public AudioClip hitReactionAudioClip;
 
     public  float dotProduct;
 
@@ -31,10 +31,7 @@ public class Combat : MonoBehaviour
 
         if (_inputs == null)
             _inputs = GetComponent<StarterAssetsInputs>();
-        
-        
     }
-
     void Update()
     {
         playerHealth = GetComponent<Player>().GetHealth();
@@ -57,16 +54,19 @@ public class Combat : MonoBehaviour
     public void Attack(bool behindEnemy)
     {
         weapon = GetComponentInChildren<Weapon>();
+        
         if (behindEnemy)
         {
             enemy.backstabbed = true;
             target.transform.localPosition = transform.position + new Vector3(0,0,-.6f);
             target.transform.localRotation = transform.localRotation;
             animator.SetTrigger("Backstab");
+            EventManager.TriggerBackstabSound(gameObject);
         }
         else
         {
             animator.SetTrigger("Attack");
+            EventManager.TriggerAttackSound(gameObject);
         }
 
         if (controller != null)
@@ -96,11 +96,12 @@ public class Combat : MonoBehaviour
     {
         if (attackReady)
         {
-            AudioSource.PlayClipAtPoint(hitReactionAudioClip, transform.position);
+            //AudioSource.PlayClipAtPoint(hitReactionAudioClip, transform.position);
 
             if (playerHealth > 0 && !backstabbed)
             {
                 animator.SetTrigger("Hit");
+                EventManager.TriggerHitSound(gameObject);
                 attackReady = false;
             }
         }
