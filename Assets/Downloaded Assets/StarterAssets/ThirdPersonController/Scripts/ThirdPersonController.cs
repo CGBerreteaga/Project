@@ -1,4 +1,5 @@
-﻿using Unity.VisualScripting;
+﻿using System.Linq;
+using Unity.VisualScripting;
 using UnityEditor.Animations;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM 
@@ -111,6 +112,7 @@ namespace StarterAssets
 
 #if ENABLE_INPUT_SYSTEM 
         private PlayerInput _playerInput;
+        private bool cursorEnabled = false;
 #endif
         private Animator _animator;
         public float timeElapsed = 0;
@@ -146,6 +148,7 @@ namespace StarterAssets
 
         private void Start()
         {
+            
             _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
             
             _hasAnimator = TryGetComponent(out _animator);
@@ -171,6 +174,8 @@ namespace StarterAssets
             JumpAndGravity();
             GroundedCheck();
             Move();
+
+            Debug.Log(cursorEnabled);
             
         }
 
@@ -411,6 +416,27 @@ namespace StarterAssets
             } else if (isCrouching) {
                 _animator.SetBool("Crouching", false);
                 isCrouching = false;
+            }
+        }
+
+        private void OnCursor() {
+            if(!cursorEnabled) {
+                Cursor.visible = true;
+                Cursor.lockState = CursorLockMode.Confined;
+                _playerInput.actions["Move"].Disable();
+                _playerInput.actions["Jump"].Disable();
+                _playerInput.actions["Melee"].Disable();
+                _playerInput.actions["Crouch"].Disable();
+                _playerInput.actions["Look"].Disable();
+                cursorEnabled = true;
+            } else if (cursorEnabled) {
+                Cursor.visible = false;
+                cursorEnabled = false;
+                _playerInput.actions["Move"].Enable();
+                _playerInput.actions["Jump"].Enable();
+                _playerInput.actions["Melee"].Enable();
+                _playerInput.actions["Crouch"].Enable();
+                _playerInput.actions["Look"].Enable();
             }
         }
 

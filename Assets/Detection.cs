@@ -22,9 +22,12 @@ public class Detection : MonoBehaviour
     void OnTriggerStay(Collider collider) {
         if(collider.gameObject.CompareTag("Player")) {
             if (!collider.GetComponent<ThirdPersonController>().isCrouching) {
-            Vector3 playerDirection = collider.transform.position - transform.position;
-            transform.parent.forward = playerDirection.normalized;
-            detected = true;
+                detected = true;
+            }
+
+            if (detected) {
+                Vector3 playerDirection = collider.transform.position - transform.position;
+                transform.parent.forward = playerDirection.normalized;
             } 
         }
     }
