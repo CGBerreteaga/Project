@@ -10,13 +10,14 @@ public class Detection : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        EventManager.OnDeath += DisableAlertNoticication;
     }
 
     // Update is called once per frame
     void Update()
     {
         alertNotificationDisplay.SetActive(detected);
+    
     }
 
     void OnTriggerEnter(Collider collider) {
@@ -46,6 +47,14 @@ public class Detection : MonoBehaviour
             detected = false;
             GetComponentInParent<Animator>().SetBool("Detected",false);
             ;
+        }
+    }
+
+    public void DisableAlertNoticication() {
+        if (GetComponentInParent<Player>().GetHealth() <= 0) {
+            alertNotificationDisplay.SetActive(false);
+            EventManager.OnDeath -= DisableAlertNoticication;
+            gameObject.SetActive(false);
         }
     }
 }

@@ -174,9 +174,6 @@ namespace StarterAssets
             JumpAndGravity();
             GroundedCheck();
             Move();
-
-            Debug.Log(cursorEnabled);
-            
         }
 
         private void LateUpdate()

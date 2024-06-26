@@ -78,6 +78,7 @@ public class Player : MonoBehaviour
         if (current_hp <= 0)
         {  
             healthBarFill.SetActive(false);
+            EventManager.TriggerOnDeath();
         }
 
         

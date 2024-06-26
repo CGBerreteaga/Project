@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using JetBrains.Annotations;
 
 public class EventManager : MonoBehaviour
 {
@@ -10,7 +11,13 @@ public class EventManager : MonoBehaviour
     public GameObject swordSoundPrefab;
 
     public GameObject backstabSoundPrefab;
-
+    public delegate void AudioEvent(GameObject instigator, AudioSource audioSource);
+    public static event AudioEvent OnAttackSound;
+    public static event AudioEvent OnDetectionSound;
+    public static event AudioEvent OnHitSound;
+    public static event AudioEvent OnSwordSound;
+    public static event AudioEvent OnBackstabSound;
+    public static event Action OnDeath;
     private void Awake()
     {
         if (instance == null)
@@ -23,12 +30,6 @@ public class EventManager : MonoBehaviour
             Destroy(gameObject); 
         }
     }
-    public delegate void AudioEvent(GameObject instigator, AudioSource audioSource);
-    public static event AudioEvent OnAttackSound;
-    public static event AudioEvent OnDetectionSound;
-    public static event AudioEvent OnHitSound;
-    public static event AudioEvent OnSwordSound;
-    public static event AudioEvent OnBackstabSound;
     public static void TriggerAttackSound(GameObject instigator)
     {
         if (instance != null && instance.attackSoundPrefab != null)
@@ -119,7 +120,7 @@ public class EventManager : MonoBehaviour
             AudioSource audioSource = audioObject.GetComponent<AudioSource>();
             if (audioSource != null && audioSource.clip != null)
             {
-                OnSwordSound?.Invoke(instigator, audioSource);
+                OnBackstabSound?.Invoke(instigator, audioSource);
             }
             else
             {
@@ -130,5 +131,9 @@ public class EventManager : MonoBehaviour
         {
             Debug.LogWarning("EventManager: Backstab audio prefab  is not set.");
         }
+    }
+
+    public static void TriggerOnDeath() {
+        OnDeath?.Invoke();
     }
 }

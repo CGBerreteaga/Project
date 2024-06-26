@@ -43,10 +43,8 @@ public class Combat : MonoBehaviour
         }
 
         if (playerHealth <= 0 && backstabbed) {
-                Debug.Log("Backstab Death");
                 animator.SetTrigger("Backstab Death");
             } else if (playerHealth <= 0 && !backstabbed) {
-                Debug.Log("Death");
                 animator.SetTrigger("Death");
             }
     }
