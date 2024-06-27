@@ -7,11 +7,13 @@ TagManager:
   - CinemachineTarget
   - Collide
   - Enemy
+  - Weapon
+  - FlyingObject
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - EnemyLock
   - Water
   - UI
   - 

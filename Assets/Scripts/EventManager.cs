@@ -18,6 +18,8 @@ public class EventManager : MonoBehaviour
     public static event AudioEvent OnSwordSound;
     public static event AudioEvent OnBackstabSound;
     public static event Action OnDeath;
+    public static event Action OnChangeTarget;
+    public static event Action<GameObject> OnTargetLock;
     private void Awake()
     {
         if (instance == null)
@@ -135,5 +137,13 @@ public class EventManager : MonoBehaviour
 
     public static void TriggerOnDeath() {
         OnDeath?.Invoke();
+    }
+
+    public static void TriggerChangeTarget() {
+        OnChangeTarget?.Invoke();
+    }
+
+    public static void TriggerTargetLock(GameObject instigator) {
+        OnTargetLock?.Invoke(instigator);
     }
 }

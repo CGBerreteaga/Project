@@ -437,6 +437,10 @@ namespace StarterAssets
             }
         }
 
+        void OnChangeTarget() {
+            EventManager.TriggerChangeTarget();
+        }
+
         public float GetSpeed() {
             return _speed;
         }
