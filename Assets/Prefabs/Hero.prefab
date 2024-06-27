@@ -184,6 +184,7 @@ MonoBehaviour:
   originPoint: {fileID: 5455383918024825166}
   target: {fileID: 1723947132370977587}
   gameObjects: []
+  targetIndexNumber: 0
 --- !u!135 &2826654984516898401
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -3351,6 +3352,11 @@ PrefabInstance:
       propertyPath: weaponSound.Array.data[1]
       value: 
       objectReference: {fileID: 8300000, guid: 3df9bbbc130ccb344af5f3fc793a630f, type: 3}
+    - target: {fileID: 7700803022947005304, guid: 32eb347f03c37014080d0c1fba9fae61,
+        type: 3}
+      propertyPath: target
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7700803022947005304, guid: 32eb347f03c37014080d0c1fba9fae61,
         type: 3}
       propertyPath: backstabAbleAlertUI

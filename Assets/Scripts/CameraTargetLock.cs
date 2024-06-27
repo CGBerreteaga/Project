@@ -10,7 +10,7 @@ public class CameraTargetLock : MonoBehaviour
     void Start()
     {
         EventManager.OnTargetLock += TargetCamera;
-        
+        target = originPosition;
         cineMachine = GetComponent<CinemachineVirtualCamera>();
     }
 

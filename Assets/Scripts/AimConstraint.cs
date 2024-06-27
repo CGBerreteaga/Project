@@ -18,15 +18,15 @@ public class AimConstraint : MonoBehaviour
         // Initialize originPoint (assuming target is already assigned in the Inspector)
 
         // Add initial target to gameObjects list
-        if (target != null)
-        {
-            gameObjects.Add(originPoint);
-        }
+        
+        gameObjects.Add(originPoint);
+        EventManager.TriggerTargetLock(gameObjects[targetIndexNumber]);
+        
     }
 
     void Update()
     {
-        Debug.Log(targetIndexNumber);
+        
         // Check if gameObjects list is not null and not empty
         if (gameObjects != null && gameObjects.Count > 0)
         {
@@ -80,7 +80,7 @@ public class AimConstraint : MonoBehaviour
     {
         if (targetIndexNumber <= gameObjects.Count-1)
         {
-            // Increment targetIndexNumber
+            
             targetIndexNumber += 1;
 
         }
@@ -88,7 +88,7 @@ public class AimConstraint : MonoBehaviour
        if (targetIndexNumber == gameObjects.Count) {
             targetIndexNumber = 0;
         }
-
+        
         EventManager.TriggerTargetLock(gameObjects[targetIndexNumber]);
     }
 }

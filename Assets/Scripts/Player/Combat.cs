@@ -1,4 +1,5 @@
 using StarterAssets;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Combat : MonoBehaviour
@@ -7,7 +8,10 @@ public class Combat : MonoBehaviour
     [SerializeField] Weapon weapon;
     [SerializeField] ThirdPersonController controller;
     [SerializeField] StarterAssetsInputs _inputs;
-    public float playerHealth;
+    public float health;
+    public float backstabDistance;
+
+    public float distanceToEnemy;
     public bool attackReady = true;
     public bool behindEnemy = false;
     public bool backstabbed = false;
@@ -16,7 +20,7 @@ public class Combat : MonoBehaviour
 
     public GameObject backstabAbleAlertUI;
 
-    public Combat enemy;
+    
     //public AudioClip hitReactionAudioClip;
 
     public  float dotProduct;
@@ -31,10 +35,14 @@ public class Combat : MonoBehaviour
 
         if (_inputs == null)
             _inputs = GetComponent<StarterAssetsInputs>();
+
+        EventManager.OnTargetLock += DesignateTarget;
+
+        
     }
     void Update()
     {
-        playerHealth = GetComponent<Player>().GetHealth();
+        health = GetComponent<Player>().GetHealth();
 
         if (_inputs != null && _inputs.attack && attackReady)
         {
@@ -42,11 +50,30 @@ public class Combat : MonoBehaviour
             Attack(behindEnemy);
         }
 
-        if (playerHealth <= 0 && backstabbed) {
+        if (health <= 0 && backstabbed) {
                 animator.SetTrigger("Backstab Death");
-            } else if (playerHealth <= 0 && !backstabbed) {
+            } else if (health <= 0 && !backstabbed) {
                 animator.SetTrigger("Death");
             }
+
+        if(gameObject.CompareTag("Player")) {
+            Vector3 directionToEnemy = target.gameObject.transform.forward - transform.position;
+            Vector3 playerDirection = transform.forward;
+            dotProduct = Vector3.Dot(directionToEnemy.normalized, playerDirection.normalized);
+            distanceToEnemy = Vector3.Distance(transform.position,target.gameObject.transform.position);
+            
+            // Check if player is directly behind the enemy
+            if (dotProduct >= 0.7 && controller.isCrouching && distanceToEnemy < backstabDistance)
+            {
+                behindEnemy = true;
+                backstabAbleAlertUI.SetActive(true);
+            }
+            else
+            {
+                behindEnemy = false;
+                backstabAbleAlertUI.SetActive(false);
+            }
+        }
     }
 
     public void Attack(bool behindEnemy)
@@ -55,7 +82,7 @@ public class Combat : MonoBehaviour
         
         if (behindEnemy)
         {
-            enemy.backstabbed = true;
+            target.GetComponentInParent<Combat>().backstabbed = true;
             target.transform.localPosition = transform.position + new Vector3(0,0,-.6f);
             target.transform.localRotation = transform.localRotation;
             animator.SetTrigger("Backstab");
@@ -96,7 +123,7 @@ public class Combat : MonoBehaviour
         {
             //AudioSource.PlayClipAtPoint(hitReactionAudioClip, transform.position);
 
-            if (playerHealth > 0 && !backstabbed)
+            if (health > 0 && !backstabbed)
             {
                 animator.SetTrigger("Hit");
                 EventManager.TriggerHitSound(gameObject);
@@ -111,37 +138,46 @@ public class Combat : MonoBehaviour
         attackReady = true;
     }
 
-    void OnTriggerStay(Collider collider)
-    {
-        if (collider.gameObject.CompareTag("Enemy"))
-        {
-            target = collider.gameObject;
-            Vector3 directionToEnemy = collider.gameObject.transform.forward - transform.position;
-            Vector3 playerDirection = transform.forward;
-            dotProduct = Vector3.Dot(directionToEnemy.normalized, playerDirection.normalized);
-            enemy = collider.gameObject.GetComponent<Combat>();
+    
             
-            // Check if player is directly behind the enemy
-            if (dotProduct >= 0.7 && controller.isCrouching)
-            {
-                behindEnemy = true;
-                backstabAbleAlertUI.SetActive(true);
-            }
-            else
-            {
-                behindEnemy = false;
-                backstabAbleAlertUI.SetActive(false);
-            }
-        }
-    }
+     
+    // void OnTriggerStay(Collider collider)
+    // {
+    //     if (collider.gameObject.CompareTag("Enemy"))
+    //     {
+    //         target = collider.gameObject;
+    //         Vector3 directionToEnemy = collider.gameObject.transform.forward - transform.position;
+    //         Vector3 playerDirection = transform.forward;
+    //         dotProduct = Vector3.Dot(directionToEnemy.normalized, playerDirection.normalized);
+            
+            
+    //         // Check if player is directly behind the enemy
+    //         if (dotProduct >= 0.7 && controller.isCrouching && Vector3.Distance(transform.position,target.gameObject.transform.position) < 0.5)
+    //         {
+    //             behindEnemy = true;
+    //             backstabAbleAlertUI.SetActive(true);
+    //         }
+    //         else
+    //         {
+    //             behindEnemy = false;
+    //             backstabAbleAlertUI.SetActive(false);
+    //         }
+    //     }
+    // }
 
-    void OnTriggerExit(Collider collider)
-    {
-        if (collider.gameObject.CompareTag("Enemy"))
-        {
-            target = null;
-            behindEnemy = false;
-            enemy = null;
-        }
+    // void OnTriggerExit(Collider collider)
+    // {
+    //     if (collider.gameObject.CompareTag("Enemy"))
+    //     {
+    //         target = null;
+    //         behindEnemy = false;
+            
+    //     }
+    // }
+
+    void DesignateTarget(GameObject enemy) {
+        
+            target = enemy;
+        
     }
 }
