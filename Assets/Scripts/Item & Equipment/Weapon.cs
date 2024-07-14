@@ -13,7 +13,9 @@ public class Weapon : MonoBehaviour
     
     public void Awake() 
     {
-        combatScript = GetComponentInParent<Combat>();
+        if (GetComponentInChildren<Combat>()) {
+            combatScript = GetComponentInParent<Combat>();
+        }
     }
     public void Activate()
     {

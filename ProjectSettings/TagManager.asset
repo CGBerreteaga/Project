@@ -9,6 +9,7 @@ TagManager:
   - Enemy
   - Weapon
   - FlyingObject
+  - Ground
   layers:
   - Default
   - TransparentFX
@@ -16,7 +17,7 @@ TagManager:
   - EnemyLock
   - Water
   - UI
-  - 
+  - Player
   - 
   - 
   - 
