@@ -50,30 +50,28 @@ public class Combat : MonoBehaviour
             Attack(behindEnemy);
         }
 
-        if (health <= 0 && backstabbed) {
-                animator.SetTrigger("Backstab Death");
-            } else if (health <= 0 && !backstabbed) {
+        if (health <= 0) {
                 animator.SetTrigger("Death");
             }
 
-        if(gameObject.CompareTag("Player")) {
-            Vector3 directionToEnemy = target.gameObject.transform.forward - transform.position;
-            Vector3 playerDirection = transform.forward;
-            dotProduct = Vector3.Dot(directionToEnemy.normalized, playerDirection.normalized);
-            distanceToEnemy = Vector3.Distance(transform.position,target.gameObject.transform.position);
-            
-            // Check if player is directly behind the enemy
-            if (dotProduct >= 0.7 && controller.isCrouching && distanceToEnemy < backstabDistance)
-            {
-                behindEnemy = true;
-                backstabAbleAlertUI.SetActive(true);
-            }
-            else
-            {
-                behindEnemy = false;
-                backstabAbleAlertUI.SetActive(false);
-            }
+        
+        Vector3 directionToEnemy = target.gameObject.transform.forward - transform.position;
+        Vector3 playerDirection = transform.forward;
+        dotProduct = Vector3.Dot(directionToEnemy.normalized, playerDirection.normalized);
+        distanceToEnemy = Vector3.Distance(transform.position,target.gameObject.transform.position);
+        
+        // Check if player is directly behind the enemy
+        if (dotProduct >= 0.7 && controller.isCrouching && distanceToEnemy < backstabDistance)
+        {
+            behindEnemy = true;
+            backstabAbleAlertUI.SetActive(true);
         }
+        else
+        {
+            behindEnemy = false;
+            backstabAbleAlertUI.SetActive(false);
+        }
+        
     }
 
     public void Attack(bool behindEnemy)

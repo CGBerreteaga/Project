@@ -9,9 +9,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float runSpeed = 4.0f;
     [SerializeField] float rotationSpeed = 5.0f;
     [SerializeField] float jumpForce = 10.0f;
+    [SerializeField] float verticalVelocity = 0;
     [SerializeField] bool isCrouching = false;
     [SerializeField] bool cursorEnabled = false;
     [SerializeField] bool isAttacking = false;
+
 
     [SerializeField] InputActionAsset playerInput;
     private Vector2 moveInput;
@@ -48,8 +50,8 @@ public class PlayerController : MonoBehaviour
         Vector3 moveDirection = new Vector3(moveInput.x, 0, moveInput.y).normalized;
         Vector3 moveVelocity = transform.forward * moveDirection.z * speed + transform.right * moveDirection.x * speed;
 
-        rb.velocity = new Vector3(moveVelocity.x, rb.velocity.y, moveVelocity.z);
-
+        rb.velocity = new Vector3(moveVelocity.x, 0, moveVelocity.z);
+    
         if (moveDirection != Vector3.zero)
         {
             if (isSprinting && !isCrouching)
@@ -64,6 +66,7 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("isRunning", false);
                 animator.SetBool("isCrouchWalking", false);
             }
+            
             else
             {
                 animator.SetBool("isCrouchWalking", true);
@@ -71,6 +74,7 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("isRunning", false);
             }
         }
+    
         else
         {
             animator.SetBool("isWalking", false);
@@ -86,6 +90,7 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("isCrouching", false);
             }
         }
+        
     }
 
     void Look()
@@ -121,7 +126,11 @@ public class PlayerController : MonoBehaviour
     {
         if (isGrounded)
         {
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            animator.SetBool("isWalking", false);
+            animator.SetBool("isRunning", false);
+            
+            animator.SetBool("isJumping", true);
+            rb.AddForce(Vector3.up * jumpForce);
             isGrounded = false;
         }
     }
@@ -175,6 +184,7 @@ public class PlayerController : MonoBehaviour
         if (other.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
+            animator.SetBool("isJumping", false);
         }
     }
 
