@@ -9,11 +9,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float runSpeed = 4.0f;
     [SerializeField] float rotationSpeed = 5.0f;
     [SerializeField] float jumpForce = 10.0f;
-    [SerializeField] float verticalVelocity = 0;
     [SerializeField] bool isCrouching = false;
     [SerializeField] bool cursorEnabled = false;
-    [SerializeField] bool isAttacking = false;
+    [SerializeField] bool aimingMode = false;
+    [SerializeField] public bool isAttacking = false;
 
+    [SerializeField] GameObject mainCamera;
+    [SerializeField] GameObject aimingModeCamera;
+
+    [SerializeField] GameObject aimingUI;
 
     [SerializeField] InputActionAsset playerInput;
     private Vector2 moveInput;
@@ -23,6 +27,7 @@ public class PlayerController : MonoBehaviour
     private bool isSprinting = false;
     private bool isGrounded = true;
     private bool isPerformingAttack = false;
+    private float pitch = 0.0f;
 
     void Start()
     {
@@ -36,22 +41,35 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         Look();
+        if (aimingMode) {
+            Aim();
+        } else {
+            ResetAim();
+        }
     }
 
     void LateUpdate()
     {
-        Move();
-        Attack();
+        if (!aimingMode) {
+            Move();
+            Attack();
+        }
     }
 
     void Move()
     {
+        if (!isGrounded)
+        {
+            // If not grounded, don't update movement animations
+            return;
+        }
+
         float speed = isSprinting && !isCrouching ? runSpeed : walkSpeed;
         Vector3 moveDirection = new Vector3(moveInput.x, 0, moveInput.y).normalized;
         Vector3 moveVelocity = transform.forward * moveDirection.z * speed + transform.right * moveDirection.x * speed;
 
-        rb.velocity = new Vector3(moveVelocity.x, 0, moveVelocity.z);
-    
+        rb.velocity = new Vector3(moveVelocity.x, rb.velocity.y, moveVelocity.z); // Maintain vertical velocity
+
         if (moveDirection != Vector3.zero)
         {
             if (isSprinting && !isCrouching)
@@ -66,7 +84,6 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("isRunning", false);
                 animator.SetBool("isCrouchWalking", false);
             }
-            
             else
             {
                 animator.SetBool("isCrouchWalking", true);
@@ -74,7 +91,6 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("isRunning", false);
             }
         }
-    
         else
         {
             animator.SetBool("isWalking", false);
@@ -90,14 +106,31 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("isCrouching", false);
             }
         }
-        
     }
 
     void Look()
+{
+    // Define rotation speeds
+    float aimingRotationSpeed = 70.0f; // Increase speed for aiming mode
+    float normalRotationSpeed = 60.0f; // Increase speed for normal mode
+
+    if (aimingMode)
     {
-        Vector3 rotation = new Vector3(0, lookInput.x * rotationSpeed, 0);
+        // Apply frame-independent rotation for aiming mode
+        float yaw = lookInput.x * aimingRotationSpeed * Time.deltaTime;
+        pitch -= lookInput.y * aimingRotationSpeed * Time.deltaTime;
+        pitch = Mathf.Clamp(pitch, -45.0f, 45.0f); // Limit the pitch to avoid extreme rotations
+
+        transform.Rotate(0, yaw, 0);
+        aimingModeCamera.transform.localEulerAngles = new Vector3(pitch, aimingModeCamera.transform.localEulerAngles.y, 0);
+    }
+    else
+    {
+        // Apply frame-independent rotation for normal mode
+        Vector3 rotation = new Vector3(0, lookInput.x * normalRotationSpeed * Time.deltaTime, 0);
         rb.MoveRotation(rb.rotation * Quaternion.Euler(rotation));
     }
+}
 
     void Attack()
     {
@@ -107,10 +140,6 @@ public class PlayerController : MonoBehaviour
             animator.SetTrigger("Attack");
         }
     }
-
-   
-        
-  
 
     void OnMove(InputValue value)
     {
@@ -128,9 +157,10 @@ public class PlayerController : MonoBehaviour
         {
             animator.SetBool("isWalking", false);
             animator.SetBool("isRunning", false);
-            
+            animator.SetBool("isCrouchWalking", false);
+
             animator.SetBool("isJumping", true);
-            rb.AddForce(Vector3.up * jumpForce);
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse); // Use ForceMode.Impulse
             isGrounded = false;
         }
     }
@@ -159,6 +189,22 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    void Aim() {
+        mainCamera.SetActive(false);
+        aimingModeCamera.SetActive(true);
+        aimingUI.SetActive(true);
+    }
+
+    void ResetAim() {
+        mainCamera.SetActive(true);
+        aimingModeCamera.SetActive(false);
+        aimingUI.SetActive(false);
+    }
+    
+    void OnAimingMode() {
+        aimingMode = !aimingMode;
+    }
+
     void OnCursor()
     {
         cursorEnabled = !cursorEnabled;
@@ -174,7 +220,6 @@ public class PlayerController : MonoBehaviour
     public void OnAttackAnimationEnd()
     {
         isAttacking = false;
-
         isPerformingAttack = false;
         animator.ResetTrigger("Attack");
     }

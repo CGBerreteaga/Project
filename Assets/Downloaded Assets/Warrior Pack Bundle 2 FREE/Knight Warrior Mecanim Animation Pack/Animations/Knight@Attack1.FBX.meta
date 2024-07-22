@@ -501,18 +501,18 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.11550152
+      - time: 0.359562
         functionName: DrawWeapon
         data: 
-        objectReferenceParameter: {fileID: 11500000, guid: 09825480f7157443dab6ba0f504f2f2f,
+        objectReferenceParameter: {fileID: 11500000, guid: db456def1e8df41469495c2564c5f754,
           type: 3}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.8753799
+      - time: 0.799786
         functionName: SheatheWeapon
         data: 
-        objectReferenceParameter: {fileID: 11500000, guid: 09825480f7157443dab6ba0f504f2f2f,
+        objectReferenceParameter: {fileID: 11500000, guid: db456def1e8df41469495c2564c5f754,
           type: 3}
         floatParameter: 0
         intParameter: 0

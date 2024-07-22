@@ -8,22 +8,15 @@ public class Weapon2 : MonoBehaviour
 {
     [SerializeField] float weaponMinDamage = 2;
     [SerializeField] float weaponMaxDamage = 5;
-    [SerializeField] Collider _collider;
+    [SerializeField] public Collider _collider;
 
-    public void Activate()
-    {
-        _collider.enabled = true;
-    }
-
-    public void Deactivate()
-    {
-        _collider.enabled = false;
-    }
+    
     
 
    void OnTriggerEnter(Collider other) {
         if (other.gameObject.CompareTag("Player")) {
             other.GetComponent<Player>().ReceiveDmg(UnityEngine.Random.Range(weaponMinDamage,weaponMaxDamage));
+            other.gameObject.GetComponent<PlayerController>().isAttacking = false;
             Debug.Log("Player Hit, Remaining HP: " + other.GetComponent<Player>().GetHealth());
  
         } else if (other.gameObject.CompareTag("Enemy")) {
@@ -36,13 +29,7 @@ public class Weapon2 : MonoBehaviour
         }
     }
 
-    public void DrawWeapon() {
-        Activate();
-    }
-
-    public void SheatheWeapon() {
-        Deactivate();
-    }
+    
 }
 
 
