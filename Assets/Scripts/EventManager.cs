@@ -10,6 +10,9 @@ public class EventManager : MonoBehaviour
     public GameObject hitSoundPrefab;
     public GameObject swordSoundPrefab;
 
+    public GameObject jumpStartSoundPrefab;
+    public GameObject jumpLandSoundPrefab;
+
     public GameObject backstabSoundPrefab;
     public delegate void AudioEvent(GameObject instigator, AudioSource audioSource);
     public static event AudioEvent OnAttackSound;
@@ -17,6 +20,10 @@ public class EventManager : MonoBehaviour
     public static event AudioEvent OnHitSound;
     public static event AudioEvent OnSwordSound;
     public static event AudioEvent OnBackstabSound;
+
+    public static event AudioEvent OnJumpStartSound;
+
+    public static event AudioEvent OnJumpLandSound;
     public static event Action OnDeath;
     public static event Action OnChangeTarget;
     public static event Action<GameObject> OnTargetLock;
@@ -132,6 +139,36 @@ public class EventManager : MonoBehaviour
         else
         {
             Debug.LogWarning("EventManager: Backstab audio prefab  is not set.");
+        }
+    }
+
+    public static void TriggerJumpStartSound(GameObject instigator) {
+        if (instance != null && instance.jumpStartSoundPrefab != null) {
+            GameObject audioObject = Instantiate(instance.jumpStartSoundPrefab, instigator.transform.position, Quaternion.identity);
+            AudioSource audioSource = audioObject.GetComponent<AudioSource>();
+
+            if(audioSource != null && audioSource.clip != null) {
+                OnJumpStartSound?.Invoke(instigator, audioSource);
+            } else {
+                Debug.LogWarning("Event Manager: Jump Start audio source or clip is not set.");
+            }
+        } else {
+            Debug.LogWarning("EventManager: Jump Start audio prefab is not set.");
+        }
+    }
+
+    public static void TriggerJumpLandSound(GameObject instigator) {
+        if (instance != null && instance.jumpStartSoundPrefab != null) {
+            GameObject audioObject = Instantiate(instance.jumpLandSoundPrefab, instigator.transform.position, Quaternion.identity);
+            AudioSource audioSource = audioObject.GetComponent<AudioSource>();
+
+            if(audioSource != null && audioSource.clip != null) {
+                OnJumpLandSound?.Invoke(instigator, audioSource);
+            } else {
+                Debug.LogWarning("Event Manager: Jump Land audio source or clip is not set.");
+            }
+        } else {
+            Debug.LogWarning("EventManager: Jump Land audio prefab is not set.");
         }
     }
 

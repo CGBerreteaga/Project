@@ -83,7 +83,7 @@ public class Player : MonoBehaviour
 
         
         if (manaBar != null && staminaBar != null) {
-            healthText.text = "HP " + current_hp + "/" + max_hp;
+            healthText.text = "HP " + ((int)current_hp) + "/" + max_hp;
             //Mana Updates
             manaBar.value = current_mp;
             manaText.text = "MP " + current_mp + "/" + max_mp;

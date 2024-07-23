@@ -50,4 +50,8 @@ public class Enemy : MonoBehaviour
             fsm.SetState(reactState);
         }
     }
+
+    public void Sleep() {
+        Debug.Log("Enemy Sleeping");
+    }
 }

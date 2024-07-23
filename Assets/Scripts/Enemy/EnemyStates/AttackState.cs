@@ -39,8 +39,6 @@ public class AttackState : State
         attacking = true;
         agent.speed = 0;
         animator.SetTrigger("Attack");
-        EventManager.TriggerAttackSound(gameObject);
-        EventManager.TriggerSwordSound(gameObject);
     }
 
     public void OnAttackAnimationEnd()

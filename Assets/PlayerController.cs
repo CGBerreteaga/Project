@@ -7,17 +7,21 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] float walkSpeed = 2.0f;
     [SerializeField] float runSpeed = 4.0f;
+    [SerializeField] float raycastDistance = 10.0f;
     [SerializeField] float rotationSpeed = 5.0f;
     [SerializeField] float jumpForce = 10.0f;
     [SerializeField] bool isCrouching = false;
     [SerializeField] bool cursorEnabled = false;
-    [SerializeField] bool aimingMode = false;
+    [SerializeField] bool behindEnemy = false;
+    [SerializeField] public bool aimingMode = false;
     [SerializeField] public bool isAttacking = false;
 
     [SerializeField] GameObject mainCamera;
     [SerializeField] GameObject aimingModeCamera;
 
     [SerializeField] GameObject aimingUI;
+
+    [SerializeField] SleepDart sleepDart;
 
     [SerializeField] InputActionAsset playerInput;
     private Vector2 moveInput;
@@ -33,9 +37,22 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
+        sleepDart = GetComponent<SleepDart>();
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        EventManager.OnJumpStartSound += HandleJumpStartSound;
+        EventManager.OnJumpLandSound += HandleJumpLandSound;
+        EventManager.OnSwordSound += HandleSwordSound;
+        
+        
+    }
+
+    private void OnDestroy() {
+        EventManager.OnJumpStartSound -= HandleJumpStartSound;
+        EventManager.OnJumpLandSound -= HandleJumpLandSound;
+        
     }
 
     void Update()
@@ -52,8 +69,9 @@ public class PlayerController : MonoBehaviour
     {
         if (!aimingMode) {
             Move();
-            Attack();
         }
+
+        Attack();
     }
 
     void Move()
@@ -134,12 +152,38 @@ public class PlayerController : MonoBehaviour
 
     void Attack()
     {
-        if (isAttacking && !isPerformingAttack)
+        if (isAttacking && !isPerformingAttack && !aimingMode && !isCrouching)
         {
             isPerformingAttack = true;
             animator.SetTrigger("Attack");
+            EventManager.TriggerSwordSound(gameObject);
+
+        } else if (isAttacking && !isPerformingAttack && aimingMode) {
+            isPerformingAttack = true;
+            RaycastHit hit;
+            sleepDart.UseSleepDart();
+
+            if (Physics.Raycast(aimingModeCamera.transform.position, aimingModeCamera.transform.forward, out hit, raycastDistance)) {
+                if (hit.collider.CompareTag("Enemy")) {
+                    if (hit.collider.GetComponent<Enemy>() != null)
+                        hit.collider.GetComponent<Enemy>().Sleep();
+                }
+            }
+
+            isPerformingAttack = false;
+            isAttacking = false;
+        } else if (isAttacking && !isPerformingAttack && isCrouching && !aimingMode) {
+            isPerformingAttack = true;
+            animator.SetBool("isBackstabbing", true);
+            EventManager.TriggerSwordSound(gameObject);
+            
         }
     }
+
+    public void HandleSwordSound(GameObject instigator, AudioSource audioSource) {
+        Debug.Log("Sword Sound Triggered");
+    }
+
 
     void OnMove(InputValue value)
     {
@@ -158,11 +202,28 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("isWalking", false);
             animator.SetBool("isRunning", false);
             animator.SetBool("isCrouchWalking", false);
+            
 
             animator.SetBool("isJumping", true);
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse); // Use ForceMode.Impulse
             isGrounded = false;
+
+            EventManager.TriggerJumpStartSound(gameObject);
         }
+    }
+
+     private void HandleJumpStartSound(GameObject instigator, AudioSource audioSource)
+    {
+        // You can play the sound here if needed
+        // For now, just log it
+        Debug.Log("Jump Start Sound Triggered");
+    }
+
+    private void HandleJumpLandSound(GameObject instigator, AudioSource audioSource)
+    {
+        // You can play the sound here if needed
+        // For now, just log it
+        Debug.Log("Jump Land Sound Triggered");
     }
 
     void OnSprint(InputValue value)
@@ -177,7 +238,7 @@ public class PlayerController : MonoBehaviour
 
     void OnCrouch(InputValue value)
     {
-        isCrouching = value.isPressed;
+        isCrouching = !isCrouching;
 
         if (isCrouching)
         {
@@ -224,12 +285,19 @@ public class PlayerController : MonoBehaviour
         animator.ResetTrigger("Attack");
     }
 
+    public void BackstabComplete() {
+        animator.SetBool("isBackstabbing", false);
+        isAttacking = false;
+        isPerformingAttack = false;
+    }
+
     void OnCollisionEnter(Collision other)
     {
         if (other.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
             animator.SetBool("isJumping", false);
+            EventManager.TriggerJumpLandSound(gameObject);
         }
     }
 
@@ -247,5 +315,11 @@ public class PlayerController : MonoBehaviour
         {
             isGrounded = false;
         }
+    }
+
+    void ReactComplete() {
+        animator.SetBool("isReacting", false);
+        isAttacking = false;
+        isPerformingAttack = false;
     }
 }

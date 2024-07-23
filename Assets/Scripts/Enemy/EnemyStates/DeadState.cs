@@ -6,5 +6,6 @@ public class DeadState : State
     {
         animator.SetTrigger("Die");
         agent.speed = 0;
+        los.alertedUI.SetActive(false);
     }
 }
