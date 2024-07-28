@@ -18,7 +18,9 @@ public class LineOfSight : MonoBehaviour
 
     void Update()
     {
-        Detected();
+        if (GetComponent<Enemy>().current_hp > 0) {
+            Detected();
+        }
     }
 
     public void Detected()

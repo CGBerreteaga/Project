@@ -1,10 +1,10 @@
 using UnityEngine;
 using System;
-using JetBrains.Annotations;
 
 public class EventManager : MonoBehaviour
 {
-    public static EventManager instance; 
+    public static EventManager instance;
+
     public GameObject attackSoundPrefab;
     public GameObject detectionSoundPrefab;
     public GameObject hitSoundPrefab;
@@ -14,31 +14,38 @@ public class EventManager : MonoBehaviour
     public GameObject jumpLandSoundPrefab;
 
     public GameObject backstabSoundPrefab;
+
     public delegate void AudioEvent(GameObject instigator, AudioSource audioSource);
     public static event AudioEvent OnAttackSound;
     public static event AudioEvent OnDetectionSound;
     public static event AudioEvent OnHitSound;
     public static event AudioEvent OnSwordSound;
     public static event AudioEvent OnBackstabSound;
-
     public static event AudioEvent OnJumpStartSound;
-
     public static event AudioEvent OnJumpLandSound;
+
     public static event Action OnDeath;
     public static event Action OnChangeTarget;
     public static event Action<GameObject> OnTargetLock;
+    public static event Action<int> OnExperienceAward;
+    public static event Action<int> OnManaUse;
+    public static event Action<int> OnStaminaUse;
+    public static event Action<int> OnStaminaRestore;
+    public static event Action OnStaminaExhausted; // Added event for stamina exhaustion
+
     private void Awake()
     {
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(gameObject); 
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
-            Destroy(gameObject); 
+            Destroy(gameObject);
         }
     }
+
     public static void TriggerAttackSound(GameObject instigator)
     {
         if (instance != null && instance.attackSoundPrefab != null)
@@ -47,7 +54,7 @@ public class EventManager : MonoBehaviour
             AudioSource audioSource = audioObject.GetComponent<AudioSource>();
             if (audioSource != null && audioSource.clip != null)
             {
-                OnAttackSound?.Invoke(instigator, audioSource); 
+                OnAttackSound?.Invoke(instigator, audioSource);
             }
             else
             {
@@ -59,6 +66,7 @@ public class EventManager : MonoBehaviour
             Debug.LogWarning("EventManager: Attack audio prefab is not set.");
         }
     }
+
     public static void TriggerDetectionSound(GameObject instigator)
     {
         if (instance != null && instance.detectionSoundPrefab != null)
@@ -79,6 +87,7 @@ public class EventManager : MonoBehaviour
             Debug.LogWarning("EventManager: Detection audio prefab is not set.");
         }
     }
+
     public static void TriggerHitSound(GameObject instigator)
     {
         if (instance != null && instance.hitSoundPrefab != null)
@@ -117,7 +126,7 @@ public class EventManager : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("EventManager: Sword audio prefab  is not set.");
+            Debug.LogWarning("EventManager: Sword audio prefab is not set.");
         }
     }
 
@@ -138,49 +147,89 @@ public class EventManager : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("EventManager: Backstab audio prefab  is not set.");
+            Debug.LogWarning("EventManager: Backstab audio prefab is not set.");
         }
     }
 
-    public static void TriggerJumpStartSound(GameObject instigator) {
-        if (instance != null && instance.jumpStartSoundPrefab != null) {
+    public static void TriggerJumpStartSound(GameObject instigator)
+    {
+        if (instance != null && instance.jumpStartSoundPrefab != null)
+        {
             GameObject audioObject = Instantiate(instance.jumpStartSoundPrefab, instigator.transform.position, Quaternion.identity);
             AudioSource audioSource = audioObject.GetComponent<AudioSource>();
-
-            if(audioSource != null && audioSource.clip != null) {
+            if (audioSource != null && audioSource.clip != null)
+            {
                 OnJumpStartSound?.Invoke(instigator, audioSource);
-            } else {
-                Debug.LogWarning("Event Manager: Jump Start audio source or clip is not set.");
             }
-        } else {
+            else
+            {
+                Debug.LogWarning("EventManager: Jump Start audio source or clip is not set.");
+            }
+        }
+        else
+        {
             Debug.LogWarning("EventManager: Jump Start audio prefab is not set.");
         }
     }
 
-    public static void TriggerJumpLandSound(GameObject instigator) {
-        if (instance != null && instance.jumpStartSoundPrefab != null) {
+    public static void TriggerJumpLandSound(GameObject instigator)
+    {
+        if (instance != null && instance.jumpLandSoundPrefab != null)
+        {
             GameObject audioObject = Instantiate(instance.jumpLandSoundPrefab, instigator.transform.position, Quaternion.identity);
             AudioSource audioSource = audioObject.GetComponent<AudioSource>();
-
-            if(audioSource != null && audioSource.clip != null) {
+            if (audioSource != null && audioSource.clip != null)
+            {
                 OnJumpLandSound?.Invoke(instigator, audioSource);
-            } else {
-                Debug.LogWarning("Event Manager: Jump Land audio source or clip is not set.");
             }
-        } else {
+            else
+            {
+                Debug.LogWarning("EventManager: Jump Land audio source or clip is not set.");
+            }
+        }
+        else
+        {
             Debug.LogWarning("EventManager: Jump Land audio prefab is not set.");
         }
     }
 
-    public static void TriggerOnDeath() {
+    public static void TriggerOnDeath()
+    {
         OnDeath?.Invoke();
     }
 
-    public static void TriggerChangeTarget() {
+    public static void TriggerChangeTarget()
+    {
         OnChangeTarget?.Invoke();
     }
 
-    public static void TriggerTargetLock(GameObject instigator) {
+    public static void TriggerTargetLock(GameObject instigator)
+    {
         OnTargetLock?.Invoke(instigator);
+    }
+
+    public static void TriggerExperienceAward(int value)
+    {
+        OnExperienceAward?.Invoke(value);
+    }
+
+    public static void TriggerOnManaUse(int value)
+    {
+        OnManaUse?.Invoke(value);
+    }
+
+    public static void TriggerOnStaminaUse(int value)
+    {
+        OnStaminaUse?.Invoke(value);
+    }
+
+    public static void TriggerOnStaminaRestore(int value)
+    {
+        OnStaminaRestore?.Invoke(value);
+    }
+
+    public static void TriggerOnStaminaExhausted()
+    {
+        OnStaminaExhausted?.Invoke();
     }
 }

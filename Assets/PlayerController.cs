@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -15,15 +14,16 @@ public class PlayerController : MonoBehaviour
     [SerializeField] bool behindEnemy = false;
     [SerializeField] public bool aimingMode = false;
     [SerializeField] public bool isAttacking = false;
-
     [SerializeField] GameObject mainCamera;
     [SerializeField] GameObject aimingModeCamera;
-
     [SerializeField] GameObject aimingUI;
-
     [SerializeField] SleepDart sleepDart;
-
     [SerializeField] InputActionAsset playerInput;
+    [SerializeField] int sprintingCost = 1;
+    [SerializeField] int staminaRestoreRate = 5;
+    [SerializeField] float staminaUseInterval = 1.0f; // Interval in seconds
+    [SerializeField] float staminaRestoreInterval = 1.0f;
+
     private Vector2 moveInput;
     private Vector2 lookInput;
     private Rigidbody rb;
@@ -32,8 +32,9 @@ public class PlayerController : MonoBehaviour
     private bool isGrounded = true;
     private bool isPerformingAttack = false;
     private float pitch = 0.0f;
+    private Coroutine staminaCoroutine;
 
-    void Start()
+    private void Start()
     {
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
@@ -45,29 +46,36 @@ public class PlayerController : MonoBehaviour
         EventManager.OnJumpStartSound += HandleJumpStartSound;
         EventManager.OnJumpLandSound += HandleJumpLandSound;
         EventManager.OnSwordSound += HandleSwordSound;
-        
-        
+        EventManager.OnStaminaUse += HandleStaminaUse;
+        EventManager.OnStaminaRestore += HandleStaminaRestore;
     }
 
-    private void OnDestroy() {
+    private void OnDestroy()
+    {
         EventManager.OnJumpStartSound -= HandleJumpStartSound;
         EventManager.OnJumpLandSound -= HandleJumpLandSound;
-        
+        EventManager.OnSwordSound -= HandleSwordSound;
+        EventManager.OnStaminaUse -= HandleStaminaUse;
+        EventManager.OnStaminaRestore -= HandleStaminaRestore;
     }
 
     void Update()
     {
         Look();
-        if (aimingMode) {
+        if (aimingMode)
+        {
             Aim();
-        } else {
+        }
+        else
+        {
             ResetAim();
         }
     }
 
     void LateUpdate()
     {
-        if (!aimingMode) {
+        if (!aimingMode)
+        {
             Move();
         }
 
@@ -127,28 +135,25 @@ public class PlayerController : MonoBehaviour
     }
 
     void Look()
-{
-    // Define rotation speeds
-    float aimingRotationSpeed = 70.0f; // Increase speed for aiming mode
-    float normalRotationSpeed = 60.0f; // Increase speed for normal mode
-
-    if (aimingMode)
     {
-        // Apply frame-independent rotation for aiming mode
-        float yaw = lookInput.x * aimingRotationSpeed * Time.deltaTime;
-        pitch -= lookInput.y * aimingRotationSpeed * Time.deltaTime;
-        pitch = Mathf.Clamp(pitch, -45.0f, 45.0f); // Limit the pitch to avoid extreme rotations
+        float aimingRotationSpeed = 70.0f;
+        float normalRotationSpeed = 60.0f;
 
-        transform.Rotate(0, yaw, 0);
-        aimingModeCamera.transform.localEulerAngles = new Vector3(pitch, aimingModeCamera.transform.localEulerAngles.y, 0);
+        if (aimingMode)
+        {
+            float yaw = lookInput.x * aimingRotationSpeed * Time.deltaTime;
+            pitch -= lookInput.y * aimingRotationSpeed * Time.deltaTime;
+            pitch = Mathf.Clamp(pitch, -45.0f, 45.0f);
+
+            transform.Rotate(0, yaw, 0);
+            aimingModeCamera.transform.localEulerAngles = new Vector3(pitch, aimingModeCamera.transform.localEulerAngles.y, 0);
+        }
+        else
+        {
+            Vector3 rotation = new Vector3(0, lookInput.x * normalRotationSpeed * Time.deltaTime, 0);
+            rb.MoveRotation(rb.rotation * Quaternion.Euler(rotation));
+        }
     }
-    else
-    {
-        // Apply frame-independent rotation for normal mode
-        Vector3 rotation = new Vector3(0, lookInput.x * normalRotationSpeed * Time.deltaTime, 0);
-        rb.MoveRotation(rb.rotation * Quaternion.Euler(rotation));
-    }
-}
 
     void Attack()
     {
@@ -157,14 +162,17 @@ public class PlayerController : MonoBehaviour
             isPerformingAttack = true;
             animator.SetTrigger("Attack");
             EventManager.TriggerSwordSound(gameObject);
-
-        } else if (isAttacking && !isPerformingAttack && aimingMode) {
+        }
+        else if (isAttacking && !isPerformingAttack && aimingMode)
+        {
             isPerformingAttack = true;
             RaycastHit hit;
             sleepDart.UseSleepDart();
 
-            if (Physics.Raycast(aimingModeCamera.transform.position, aimingModeCamera.transform.forward, out hit, raycastDistance)) {
-                if (hit.collider.CompareTag("Enemy")) {
+            if (Physics.Raycast(aimingModeCamera.transform.position, aimingModeCamera.transform.forward, out hit, raycastDistance))
+            {
+                if (hit.collider.CompareTag("Enemy"))
+                {
                     if (hit.collider.GetComponent<Enemy>() != null)
                         hit.collider.GetComponent<Enemy>().Sleep();
                 }
@@ -172,18 +180,29 @@ public class PlayerController : MonoBehaviour
 
             isPerformingAttack = false;
             isAttacking = false;
-        } else if (isAttacking && !isPerformingAttack && isCrouching && !aimingMode) {
+        }
+        else if (isAttacking && !isPerformingAttack && isCrouching && !aimingMode)
+        {
             isPerformingAttack = true;
             animator.SetBool("isBackstabbing", true);
             EventManager.TriggerSwordSound(gameObject);
-            
         }
     }
 
-    public void HandleSwordSound(GameObject instigator, AudioSource audioSource) {
+    public void HandleSwordSound(GameObject instigator, AudioSource audioSource)
+    {
         Debug.Log("Sword Sound Triggered");
     }
 
+    private void HandleStaminaUse(int staminaUsed)
+    {
+        // No direct handling in PlayerController; handled in Player script
+    }
+
+    private void HandleStaminaRestore(int staminaRestoreRate)
+    {
+        // No direct handling in PlayerController; handled in Player script
+    }
 
     void OnMove(InputValue value)
     {
@@ -202,33 +221,40 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("isWalking", false);
             animator.SetBool("isRunning", false);
             animator.SetBool("isCrouchWalking", false);
-            
-
             animator.SetBool("isJumping", true);
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse); // Use ForceMode.Impulse
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             isGrounded = false;
 
             EventManager.TriggerJumpStartSound(gameObject);
         }
     }
 
-     private void HandleJumpStartSound(GameObject instigator, AudioSource audioSource)
+    private void HandleJumpStartSound(GameObject instigator, AudioSource audioSource)
     {
-        // You can play the sound here if needed
-        // For now, just log it
         Debug.Log("Jump Start Sound Triggered");
     }
 
     private void HandleJumpLandSound(GameObject instigator, AudioSource audioSource)
     {
-        // You can play the sound here if needed
-        // For now, just log it
         Debug.Log("Jump Land Sound Triggered");
     }
 
     void OnSprint(InputValue value)
     {
         isSprinting = value.isPressed;
+
+        if (isSprinting)
+        {
+            if (staminaCoroutine != null)
+                StopCoroutine(staminaCoroutine);
+            staminaCoroutine = StartCoroutine(ConsumeStamina());
+        }
+        else
+        {
+            if (staminaCoroutine != null)
+                StopCoroutine(staminaCoroutine);
+            staminaCoroutine = StartCoroutine(RestoreStamina());
+        }
     }
 
     void OnMelee()
@@ -250,19 +276,22 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void Aim() {
+    void Aim()
+    {
         mainCamera.SetActive(false);
         aimingModeCamera.SetActive(true);
         aimingUI.SetActive(true);
     }
 
-    void ResetAim() {
+    void ResetAim()
+    {
         mainCamera.SetActive(true);
         aimingModeCamera.SetActive(false);
         aimingUI.SetActive(false);
     }
-    
-    void OnAimingMode() {
+
+    void OnAimingMode()
+    {
         aimingMode = !aimingMode;
     }
 
@@ -285,7 +314,8 @@ public class PlayerController : MonoBehaviour
         animator.ResetTrigger("Attack");
     }
 
-    public void BackstabComplete() {
+    public void BackstabComplete()
+    {
         animator.SetBool("isBackstabbing", false);
         isAttacking = false;
         isPerformingAttack = false;
@@ -317,9 +347,28 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void ReactComplete() {
+    void ReactComplete()
+    {
         animator.SetBool("isReacting", false);
         isAttacking = false;
         isPerformingAttack = false;
+    }
+
+    private IEnumerator ConsumeStamina()
+    {
+        while (isSprinting)
+        {
+            EventManager.TriggerOnStaminaUse(sprintingCost);
+            yield return new WaitForSeconds(staminaUseInterval);
+        }
+    }
+
+    private IEnumerator RestoreStamina()
+    {
+        while (!isSprinting)
+        {
+            EventManager.TriggerOnStaminaRestore(staminaRestoreRate);
+            yield return new WaitForSeconds(staminaRestoreInterval);
+        }
     }
 }
