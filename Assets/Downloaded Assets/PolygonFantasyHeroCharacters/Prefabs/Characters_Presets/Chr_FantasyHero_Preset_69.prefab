@@ -47074,9 +47074,15 @@ MonoBehaviour:
   weapon: {fileID: 0}
   controller: {fileID: 0}
   _inputs: {fileID: 0}
+  health: 0
+  backstabDistance: 0
+  distanceToEnemy: 0
   attackReady: 1
   behindEnemy: 0
-  hitReacionAudioClip: {fileID: 0}
+  backstabbed: 0
+  target: {fileID: 0}
+  backstabAbleAlertUI: {fileID: 0}
+  dotProduct: 0
 --- !u!114 &1880913065119454090
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -47089,25 +47095,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4f75a3cb316940768a35ff78f894258, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  xpGain: 0
-  maxHp: 50
-  currentHp: 50
-  maxMana: 0
-  maxXp: 0
-  baseStr: 0
-  baseDef: 0
-  baseInt: 0
-  strength: {fileID: 11400000, guid: 382558a795a6e468f8cefe8c4ad7cfc1, type: 2}
-  defense: {fileID: 11400000, guid: 36d0b6eb42bb54cb288fc4b13e9fda11, type: 2}
-  intelligence: {fileID: 11400000, guid: 2782363859b274e69a393bac3ea44150, type: 2}
-  hp: {fileID: 11400000, guid: 6d0c9c98443ff4171923e102e273dce1, type: 2}
-  mana: {fileID: 11400000, guid: 16258afa8d8084ac1ba15c153c084355, type: 2}
-  xp: {fileID: 11400000, guid: fa0e453c1556f44abbd8df698b812079, type: 2}
-  stamina: {fileID: 11400000, guid: fbbd35cd81b8e4d5ebe1b5f05dd62a58, type: 2}
   animator: {fileID: 95863370628369246}
   healthBar: {fileID: 5618527054556581742}
+  healthText: {fileID: 0}
   healthBarFill: {fileID: 0}
-  spellCost: 5
+  manaBar: {fileID: 0}
+  manaText: {fileID: 0}
+  manaBarFill: {fileID: 0}
+  staminaBar: {fileID: 0}
+  staminaText: {fileID: 0}
+  staminaBarFill: {fileID: 0}
+  playerLevel: 1
+  playerLevelText: {fileID: 0}
+  experienceBar: {fileID: 0}
+  max_hp: 0
+  max_mp: 0
+  max_stamina: 0
+  current_hp: 0
+  current_mp: 0
+  current_stamina: 0
+  max_experience: 20
+  current_experience: 0
 --- !u!1 &1715866479854816
 GameObject:
   m_ObjectHideFlags: 0

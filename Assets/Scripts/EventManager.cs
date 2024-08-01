@@ -31,7 +31,9 @@ public class EventManager : MonoBehaviour
     public static event Action<int> OnManaUse;
     public static event Action<int> OnStaminaUse;
     public static event Action<int> OnStaminaRestore;
-    public static event Action OnStaminaExhausted; // Added event for stamina exhaustion
+    public static event Action OnStaminaExhausted;
+    public static event Action<float, float, float, int, int, int> UpdateStatBoard;
+     // Added event for stamina exhaustion
 
     private void Awake()
     {
@@ -231,5 +233,9 @@ public class EventManager : MonoBehaviour
     public static void TriggerOnStaminaExhausted()
     {
         OnStaminaExhausted?.Invoke();
+    }
+
+    public static void TriggerStatBoardUpdate(float health, float mana, float stamina, int strength, int dexertity, int intelligence) {
+        UpdateStatBoard?.Invoke(health, mana, stamina, strength, dexertity,intelligence );
     }
 }

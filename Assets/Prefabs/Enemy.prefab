@@ -56358,12 +56358,17 @@ MonoBehaviour:
   staminaBar: {fileID: 0}
   staminaText: {fileID: 0}
   staminaBarFill: {fileID: 0}
+  playerLevel: 1
+  playerLevelText: {fileID: 0}
+  experienceBar: {fileID: 0}
   max_hp: 25
   max_mp: 0
   max_stamina: 10
   current_hp: 0
   current_mp: 0
   current_stamina: 0
+  max_experience: 20
+  current_experience: 0
 --- !u!135 &8731350855309777500
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -62402,12 +62407,17 @@ MonoBehaviour:
   staminaBar: {fileID: 0}
   staminaText: {fileID: 0}
   staminaBarFill: {fileID: 0}
+  playerLevel: 1
+  playerLevelText: {fileID: 0}
+  experienceBar: {fileID: 0}
   max_hp: 25
   max_mp: 0
   max_stamina: 10
   current_hp: 0
   current_mp: 0
   current_stamina: 0
+  max_experience: 20
+  current_experience: 0
 --- !u!135 &6928155437587504828
 SphereCollider:
   m_ObjectHideFlags: 0

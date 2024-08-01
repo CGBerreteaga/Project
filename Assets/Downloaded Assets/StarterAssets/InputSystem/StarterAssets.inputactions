@@ -320,6 +320,34 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Menu",
+            "id": "7b3c7e17-6ac3-49b7-af88-c1598512c5d2",
+            "actions": [
+                {
+                    "name": "Cursor",
+                    "type": "Button",
+                    "id": "fb6701d8-5562-4f33-93e5-35cb973b62d1",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "b51ade62-b692-4146-baf0-389cf6cdef42",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Cursor",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [

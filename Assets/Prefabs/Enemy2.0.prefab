@@ -14991,6 +14991,9 @@ GameObject:
   - component: {fileID: 4743656723238333014}
   - component: {fileID: 2763308945567316838}
   - component: {fileID: 7748907733661214210}
+  - component: {fileID: 460142599094246986}
+  - component: {fileID: 8536607289798499734}
+  - component: {fileID: 8614155668128635781}
   m_Layer: 0
   m_Name: Enemy2.0
   m_TagString: Enemy
@@ -15103,7 +15106,6 @@ MonoBehaviour:
   detected: 0
   first: 1
   alertedUI: {fileID: 8304197002349393901}
-  player: {fileID: 0}
 --- !u!114 &8254445821282382517
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15116,7 +15118,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3a247ef45064bdb9088778321aea1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  max_hp: 25
+  max_hp: 250
   current_hp: 0
   healthBarSlider: {fileID: 3471390064982403064}
   healthFillBar: {fileID: 8059216678490813692}
@@ -15308,6 +15310,46 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &460142599094246986
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2707529155361072962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b80ae753e40c74f0db304d225a699a12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stepsEffect: {fileID: 1317931380254769337, guid: 76a49bdcb71994d36968bdfc3dd3b264,
+    type: 3}
+--- !u!114 &8536607289798499734
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2707529155361072962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db456def1e8df41469495c2564c5f754, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponCollider: {fileID: 0}
+--- !u!114 &8614155668128635781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2707529155361072962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59c27f71fb29341a29e34ee3d9b8ba4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  experiencePoints: 10
 --- !u!1 &2718621482125099543
 GameObject:
   m_ObjectHideFlags: 0
@@ -46215,8 +46257,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09825480f7157443dab6ba0f504f2f2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponMinDamage: 2
-  weaponMaxDamage: 5
+  weaponMinDamage: 20
+  weaponMaxDamage: 50
+  behindAttackMultiplier: 100
   _collider: {fileID: 1612901017592024918}
 --- !u!65 &1612901017592024918
 BoxCollider:

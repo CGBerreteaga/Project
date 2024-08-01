@@ -1,36 +1,40 @@
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
     [SerializeField] Player player;
 
-    [SerializeField] List<EnumsScriptableObject> items = new();
+    [SerializeField] List<ItemScriptableObject> items = new();
 
-    public Action<EnumsScriptableObject> onAddItem, onUseItem, onRemoveItem;
-    public void Add(EnumsScriptableObject item)
+    public Action<ItemScriptableObject> onAddItem, onUseItem, onRemoveItem;
+
+    // Change the Add method to accept ItemScriptableObject
+    public void Add(ItemScriptableObject item)
     {
-        items.Add(item);
-        Debug.Log(item);
-        //onAddItem?.Invoke(item);
+        if (item != null)
+        {
+            items.Add(item);
+            Debug.Log($"Item added: {item}");
+            onAddItem?.Invoke(item);
+        }
+        else
+        {
+            Debug.LogError("Item is null.");
+        }
     }
 
-    public void Remove(EnumsScriptableObject item)
+    public void Remove(ItemScriptableObject item)
     {
-        items.Remove(item);
-        //onRemoveItem?.Invoke(item);
+        if (items.Remove(item))
+        {
+            onRemoveItem?.Invoke(item);
+        }
+        else
+        {
+            Debug.LogError("Item not found in inventory.");
+        }
     }
-
-    internal void Add(object item)
-    {
-        throw new NotImplementedException();
-    }
-
-    // public void Use(Item item)
-    // {
-    //     item.Use(player);
-    //     onUseItem?.Invoke(item);
-    // }
 }
-

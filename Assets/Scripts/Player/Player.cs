@@ -28,16 +28,21 @@ public class Player : MonoBehaviour
     [SerializeField] float max_hp;
     [SerializeField] float max_mp;
     [SerializeField] float max_stamina;
+    [SerializeField] float max_experience = 20;
     [SerializeField] float current_hp;
     [SerializeField] float current_mp;
     [SerializeField] float current_stamina;
-
-    [SerializeField] float max_experience = 20;
     [SerializeField] float current_experience = 0;
+    [SerializeField] int strength = 5;
+    [SerializeField] int dexertity = 1;
+    [SerializeField] int intelligence = 1;
+    
 
-    private void Awake()
+   
+
+    private void Start()
     {
-        current_hp = max_hp;
+        current_hp =  max_hp;
         healthBar.maxValue = max_hp;
         current_mp = max_mp;
         current_stamina = max_stamina;
@@ -48,10 +53,7 @@ public class Player : MonoBehaviour
             staminaBar.maxValue = max_stamina;
             experienceBar.maxValue = max_experience;
         }
-    }
-
-    private void Start()
-    {
+        
         if (GetComponent<ThirdPersonController>() != null)
         {
             thirdPersonController = GetComponent<ThirdPersonController>();
@@ -61,8 +63,10 @@ public class Player : MonoBehaviour
         EventManager.OnManaUse += ExpendMana;
         EventManager.OnStaminaUse += ExpendStamina;
         EventManager.OnStaminaRestore += RestoreStamina;
+        EventManager.TriggerStatBoardUpdate(max_hp,max_mp,max_stamina,strength,dexertity,intelligence);
 
         playerLevelText.text = "LvL " + playerLevel;
+        
     }
 
     private void OnDestroy()
@@ -99,6 +103,18 @@ public class Player : MonoBehaviour
         return current_stamina;
     }
 
+    public float GetStrength() {
+        return strength;
+    }
+
+    public float GetDexertity() {
+        return dexertity;
+    }
+
+    public float GetIntelligence() {
+        return intelligence;
+    }
+
     public void ReceiveExp(int value)
     {
         current_experience += value;
@@ -109,6 +125,10 @@ public class Player : MonoBehaviour
         if (current_experience >= max_experience)
         {
             playerLevel++;
+            strength++;
+            dexertity++;
+            intelligence++;
+            EventManager.TriggerStatBoardUpdate(max_hp, max_mp, max_stamina, strength, dexertity, intelligence);
             playerLevelText.text = "LvL " + playerLevel;
             max_experience = max_experience * playerLevel;
             current_experience = 0;
@@ -169,4 +189,6 @@ public class Player : MonoBehaviour
             experienceBar.value = current_experience;
         }
     }
+
+
 }

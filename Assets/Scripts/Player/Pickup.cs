@@ -1,15 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
-
 
 public class Pickup : MonoBehaviour
 {
     // Serialized field to specify the item type in the Inspector
-    [SerializeField] private EnumsScriptableObject item;
+    [SerializeField] private ItemScriptableObject item;  // Ensure this is the correct type
     
-
     // This method is called when another collider enters the trigger collider attached to the object this script is attached to
     private void OnTriggerEnter(Collider other)
     {
@@ -20,10 +15,22 @@ public class Pickup : MonoBehaviour
         if (inventory != null)
         {
             // Add the item to the inventory
-            inventory.Add(item);
+            if (item != null)
+            {
+                inventory.Add(item);  // Pass the correct item type
+                Debug.Log($"Picked up item: {item}");
 
-            // Destroy the item GameObject after picking it up
-            Destroy(gameObject);
+                // Destroy the item GameObject after picking it up
+                Destroy(gameObject);
+            }
+            else
+            {
+                Debug.LogError("Item is not assigned in Pickup script.");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Inventory component not found in the collider.");
         }
     }
 }
